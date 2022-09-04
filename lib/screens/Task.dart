@@ -57,7 +57,7 @@ class TaskState extends State <Task>{
                       TextField(
                         controller: InputHeaderController,
                         onChanged: (value) {
-                          print(value);
+                          // print(value);
                           if(value != "") {
                             if(widget.task == null) {
                               // widget.task?.title = value;
@@ -90,6 +90,7 @@ class TaskState extends State <Task>{
                 Container(
                   margin: EdgeInsets.only(top:15,bottom: 25) ,
                   child: TextField(
+                    controller: InputDescriptionController,
                   onChanged: (value) {
                     widget.task?.description = value;
                   },

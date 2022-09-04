@@ -1,3 +1,4 @@
+// ignore: file_names
 
 
 import 'dart:html';
@@ -28,20 +29,36 @@ class HomeState extends State<Home> {
   }
 
 
+  updateTask(eachTask){
+
+
+    List NewTask=  widget.tasks.map((taskItem) {
+      if(taskItem.id == eachTask.id) {
+        return eachTask;
+      }
+
+      return taskItem;
+    }).toList();
+
+    setState(() {
+      widget.tasks= NewTask;
+    });
+  }
+
+
 
   void SwitchToCreateTasl(context)async{
     TaskModel task  =await Navigator.push(context, MaterialPageRoute(
         builder: (context)=>Task())
     );
-    print("task");
-    print(task);
+    // print("task");
+    // print(task);
     if(task != null) {
       addToTask(task);
     }
 
   }
 
- 
 
 
 
@@ -110,8 +127,13 @@ class HomeState extends State<Home> {
                                       children: [
                                         Expanded(child:
                                             GestureDetector(
-                                                onTap:(){
-                                                  Navigator.push(context,MaterialPageRoute(builder: (contex)=>Task()) );
+                                                onTap:()async{
+                                                 TaskModel eachTask= await Navigator.push(context,MaterialPageRoute(
+                                                      builder: (contex)=>Task( task:widget.tasks[index] ,))
+                                                  );
+                                                 updateTask(eachTask);
+
+
                                                 },
 
                                               child: Column(
