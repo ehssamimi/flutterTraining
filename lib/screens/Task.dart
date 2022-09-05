@@ -15,7 +15,7 @@ class Task extends StatefulWidget{
 
 }
 class TaskState extends State <Task>{
-  List <Todo> todos=[];
+  // List <Todo> todos=[];
   TextEditingController InputHeaderController =TextEditingController();
   TextEditingController InputDescriptionController =TextEditingController();
 
@@ -29,14 +29,24 @@ class TaskState extends State <Task>{
   }
 
   addTodo(value){
-    setState(() {
-      todos.add(Todo(title: value, isDone: false));
-    });
+    widget.task?.addNewTodo(value);
+    setState(() {});
   }
+
+  toggleDoneTodo(id) {
+     widget.task?.toggleDoneTodo(id);
+    setState(() {});
+  }
+
+  DeleteTodo(id) {
+    widget.task?.DeleteTodo(id);
+    setState(() {});
+  }
+
 
   @override
   Widget build(BuildContext context) {
-
+print(widget.task?.todos);
 
     return SafeArea(child:
         Directionality(textDirection: TextDirection.rtl,
@@ -64,11 +74,12 @@ class TaskState extends State <Task>{
                               // widget.task?.id = DateTime.now().microsecondsSinceEpoch;
                               setState(() {
                                 // widget.task?.title = value;
+                                // print(DateTime.now().microsecondsSinceEpoch);
                                 widget.task = TaskModel(
                                     id : DateTime.now().microsecondsSinceEpoch,
                                     title: value,
-                                  // description: "asas"
-                                );
+                                  todos: []
+                                 );
                               });
                             } else {
                               widget.task?.title = value;
@@ -94,8 +105,6 @@ class TaskState extends State <Task>{
                   onChanged: (value) {
                     widget.task?.description = value;
                   },
-
-
                     decoration: InputDecoration(
                       hintText: " توضیحات خود را اضافه کنید  ",
                       border: InputBorder.none,
@@ -106,27 +115,40 @@ class TaskState extends State <Task>{
                     ),
                   )
                 ),
-                  Expanded(child:
-                      ListView.builder(
-                        itemCount: todos.length,
-                          itemBuilder: (context,index)=>TaskWidget(title:todos[index].title, isDone:todos[index].isDone))
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        height: 20,
-                        width: 20,
-                        margin: EdgeInsets.only(left: 7),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(width:1,color: Colors.black26 )
-                        ),
-                      ),
-                      Expanded(child:AddNewTodo(addTodo:addTodo)
+                  Visibility(
+                    visible: widget.task!=null,
+                    child:  Expanded(child:
+                  ListView.builder(
+                      itemCount:widget.task?.todos?.length,
+                      // itemBuilder: (context,index)=>TaskWidget(title:todos[index].title, isDone:todos[index].isDone))
+                      itemBuilder: (context,index)=>TaskWidget(
+                          todo : widget.task?.todos![index] ?? Todo(id: 0 , title: "", isDone: false),
+                          toggleDone : toggleDoneTodo,
+                          deleteDone:DeleteTodo,
+                      ))
+                  ),),
+                  Visibility(
+                      visible: widget.task!=null,
+                      child:     Row(
+                        children: [
+                          Container(
+                            height: 20,
+                            width: 20,
+                            margin: EdgeInsets.only(left: 7),
+                            decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(width:1,color: Colors.black26 )
+                            ),
+                          ),
+                          Expanded(child:AddNewTodo(addTodo:addTodo)
+                          )
+                        ],
                       )
-                    ],
+
                   )
+
+
                 ],
               ),
             )) ,

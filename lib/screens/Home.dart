@@ -24,7 +24,7 @@ class HomeState extends State<Home> {
 
   addToTask(task){
     setState(() {
-      widget.tasks.add(TaskModel(title: task.title, id: DateTime.now().microsecond,description:task.description??"توضیحات مربوط به اون" ));
+      widget.tasks.add(TaskModel(title: task.title, id: task.id,description:task.description??"توضیحات مربوط به اون" ,todos:task.todos??[]));
     });
   }
 
@@ -32,16 +32,23 @@ class HomeState extends State<Home> {
   updateTask(eachTask){
 
 
-    List NewTask=  widget.tasks.map((taskItem) {
+    List<TaskModel> NewTask=  widget.tasks.map((taskItem) {
+      // print(taskItem.id);
       if(taskItem.id == eachTask.id) {
         return eachTask;
       }
 
       return taskItem;
-    }).toList();
+    }).toList().cast<TaskModel>();
 
     setState(() {
       widget.tasks= NewTask;
+    });
+  }
+
+  DeleteTask(taskID){
+    setState(() {
+      widget.tasks=widget.tasks.where((taskItem)=>taskItem.id !=taskID).toList();
     });
   }
 
@@ -144,8 +151,15 @@ class HomeState extends State<Home> {
                                                 ],
                                               ))
                                             ),
+                                        GestureDetector(
+                                          onTap:(){
+                                            // print(widget.tasks[index].id);
+                                            DeleteTask(widget.tasks[index].id);
+                                          },
+                                          child:Icon(Icons.delete,color: Colors.red,size: 20,) ,
+                                        )
 
-                                        Icon(Icons.delete,color: Colors.red,size: 20,)
+
                                       ],
                                     ),
                                   );
